@@ -19,7 +19,7 @@ using namespace std::chrono_literals;//使用时间命名空间，可以数字�
 class Talker: public rclcpp::Node
 {
   public:
-    Talker():Node("talker_node_cpp")
+    Talker():Node("talker_node_cpp"), count(0)
     {
       RCLCPP_INFO(this->get_logger(),"talker_node_cpp节点创建成功");
       //3-1创建消息发布方
