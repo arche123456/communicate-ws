@@ -44,21 +44,78 @@ class ProgressActionServer: public rclcpp::Node
     }
     // 3-2处理提交的目标值（回调函数）
     //using GoalCallback = std::function<GoalResponse(const GoalUUID &, std::shared_ptr<const typename ActionT::Goal>)>;
-    rclcpp_action::GoalResponse handle_goal(const rclcpp_action::GoalUUID & uuid, std::shared_ptr<const Progress::Goal>)
+    rclcpp_action::GoalResponse handle_goal(const rclcpp_action::GoalUUID & uuid, std::shared_ptr<const Progress::Goal> goal)
     {
+      (void)uuid;
+      //业务逻辑：判断提交的数字是否大于1，是就接收，不是就拒绝
+      if(goal->num <= 1)
+      {
+        RCLCPP_INFO(this->get_logger(), "提交的目标值必须大于1!");
+        return rclcpp_action::GoalResponse::REJECT;//接到请求并立即执行
+      }
+      RCLCPP_INFO(this->get_logger(), "提交的目标值合法");
       return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;//接到请求并立即执行
     }
     // 3-3处理取消请求（回调函数）
     //using CancelCallback = std::function<CancelResponse(std::shared_ptr<ServerGoalHandle<ActionT>>)>;
     rclcpp_action::CancelResponse handle_cancel(std::shared_ptr<rclcpp_action::ServerGoalHandle<Progress>> goal_handle)
     {
+      (void)goal_handle;
+      RCLCPP_INFO(this->get_logger(), "接收到任务取消请求");
       return rclcpp_action::CancelResponse::ACCEPT;//接受取消请求
     }
     // 3-4生成连续反馈与最终相应（回调函数）
     //using AcceptedCallback = std::function<void (std::shared_ptr<ServerGoalHandle<ActionT>>)>;
+    void execute(std::shared_ptr<rclcpp_action::ServerGoalHandle<Progress>> goal_handle)
+    {
+      //1.生成连续反馈返回给客户端
+      //void publish_feedback(std::shared_ptr<base_interface_demo::action::Progress_Feedback> feedback_msg)
+      //goal_handle->publish_feedback();
+      //首先要获取目标值，然后遍历，遍历中进行累加，且每循环一次就计算进度并作为连续反馈发布
+      int num = goal_handle->get_goal()->num;
+      int sum = 0;
+      auto feedback = std::make_shared<Progress::Feedback>();
+      auto result = std::make_shared<Progress::Result>();
+      //设置休眠
+      rclcpp::Rate rate(1.0);
+      for(int i = 1; i <= num; i++)
+      {
+        sum += i;
+        double progress = i / (double)num;//计算进度
+        feedback->progress = progress;
+        goal_handle->publish_feedback(feedback);
+        RCLCPP_INFO(this->get_logger(), "连续反馈中，进度:%.2f", progress);
+        //判断是否接收到了取消请求
+        //goal_handle->is_canceling()
+        //void canceled(std::shared_ptr<base_interface_demo::action::Progress_Result> result_msg)
+        //goal_handle->canceled()
+        if(goal_handle->is_canceling())
+        {
+          //如果接收到了，终止程序return
+          result->sum = sum;
+          goal_handle->canceled(result);
+          RCLCPP_INFO(this->get_logger(),"任务被取消了");
+          return;
+        }
+        //如果接收到了，终止程序，return
+
+        rate.sleep();
+      }
+      //2.生成最终响应结果
+      //void succeed(std::shared_ptr<base_interface_demo::action::Progress_Result> result_msg)
+      //goal_handle->succeed()
+      if(rclcpp::ok())
+      {
+        result->sum = sum;
+        goal_handle->succeed(result);
+        RCLCPP_INFO(this->get_logger(), "最终结果:%d", sum);
+      }
+    }
     void handle_accepted(std::shared_ptr<rclcpp_action::ServerGoalHandle<Progress>> goal_handle)
     {
-
+      //新建子线程处理主逻辑实现
+      std::thread(std::bind(&ProgressActionServer::execute, this, goal_handle)).detach();
+      (void)goal_handle;
     }
   private:
     rclcpp_action::Server<Progress>::SharedPtr server_;
