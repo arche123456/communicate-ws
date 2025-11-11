@@ -47,7 +47,7 @@ class AddIntsClient: public rclcpp::Node
         //对ctrl+c这个操作做出特殊处理
         //1.怎么判断ctrl+c按下
         //2.如何处理
-        //按下ctrl+c是结束ROS@程序，意味着要释放资源，比如：关闭context
+        //按下ctrl+c是结束ROS2程序，意味着要释放资源，比如：关闭context
         if(rclcpp::ok() == false)
         {
           RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"强行终止客户端");

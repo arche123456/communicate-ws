@@ -89,7 +89,10 @@ class ProgressActionServer: public rclcpp::Node
         //goal_handle->is_canceling()
         //void canceled(std::shared_ptr<base_interface_demo::action::Progress_Result> result_msg)
         //goal_handle->canceled()
-        if(goal_handle->is_canceling())
+        //std::make_shared<typename ActionT::Impl::GetResultService::Response>()
+        // auto response = std::make_shared<Progress::Impl::GetResultService::Response>();
+        // if(response->status == action_msgs::msg::GoalStatus::STATUS_CANCELED)
+        if(!goal_handle->is_active())
         {
           //如果接收到了，终止程序return
           result->sum = sum;
@@ -98,7 +101,6 @@ class ProgressActionServer: public rclcpp::Node
           return;
         }
         //如果接收到了，终止程序，return
-
         rate.sleep();
       }
       //2.生成最终响应结果
