@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(cpp05_names)
+project(cpp06_time)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -18,21 +18,18 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(std_msgs REQUIRED)
 
-add_executable(demo01_names src/demo01_names.cpp)
-target_include_directories(demo01_names PUBLIC
+add_executable(demo01_time src/demo01_time.cpp)
+target_include_directories(demo01_time PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(
-  demo01_names
+  demo01_time
   "rclcpp"
-  "std_msgs"
 )
 
-install(TARGETS demo01_names
+install(TARGETS demo01_time
   DESTINATION lib/${PROJECT_NAME})
-install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

@@ -1,16 +1,22 @@
 //1.包含头文件
 #include "rclcpp/rclcpp.hpp"
-
+#include "std_msgs/msg/string.hpp"
 //3.自定义节点类
 class MyNode: public rclcpp::Node
 {
   public:
-    MyNode():Node("mynode_node_cpp", "t1_ns")
+    MyNode():Node("zhen_keng", "zuoxie") //节点名称，命名空间
     {
+      //全局话题：命名空间，节点名称无关系
+      //pub_ = this->create_publisher<std_msgs::msg::String>("/shi", 10);
+      //相对话题：
+      //pub_ = this->create_publisher<std_msgs::msg::String>("kaihui", 10);
+      //私有话题：
+      pub_ = this->create_publisher<std_msgs::msg::String>("~/vip", 10);
       RCLCPP_INFO(this->get_logger(),"mynode_node_cpp节点创建成功！");
-
     }
   private:
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
 };
 
 
