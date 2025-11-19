@@ -27,6 +27,16 @@ add_executable(exer01_pub_sub src/exer01_pub_sub.cpp)
 target_include_directories(exer01_pub_sub PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
+
+add_executable(exer02_server src/exer02_server.cpp)
+target_include_directories(exer02_server PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+add_executable(exer03_client src/exer03_client.cpp)
+target_include_directories(exer03_client PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(
   exer01_pub_sub
   "rclcpp"
@@ -36,8 +46,33 @@ ament_target_dependencies(
   "geometry_msgs"
 )
 
+ament_target_dependencies(
+  exer02_server
+  "rclcpp"
+  "turtlesim"
+  "rclcpp_action"
+  "base_interface_demo"
+  "geometry_msgs"
+)
+
+ament_target_dependencies(
+  exer03_client
+  "rclcpp"
+  "turtlesim"
+  "rclcpp_action"
+  "base_interface_demo"
+  "geometry_msgs"
+)
+
 install(TARGETS exer01_pub_sub
   DESTINATION lib/${PROJECT_NAME})
+
+install(TARGETS exer02_server
+  DESTINATION lib/${PROJECT_NAME})
+
+install(TARGETS exer03_client
+  DESTINATION lib/${PROJECT_NAME})
+
 install(DIRECTORY launch
 DESTINATION share/${PROJECT_NAME})
 
