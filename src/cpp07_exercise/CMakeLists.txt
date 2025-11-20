@@ -48,6 +48,11 @@ target_include_directories(exer05_action_client PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
+add_executable(exer06_param src/exer06_param.cpp)
+target_include_directories(exer06_param PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
 ament_target_dependencies(
   exer01_pub_sub
   "rclcpp"
@@ -93,6 +98,14 @@ ament_target_dependencies(
   "geometry_msgs"
 )
 
+ament_target_dependencies(
+  exer06_param
+  "rclcpp"
+  "turtlesim"
+  "rclcpp_action"
+  "base_interface_demo"
+  "geometry_msgs"
+)
 install(TARGETS exer01_pub_sub
   DESTINATION lib/${PROJECT_NAME})
 
@@ -107,6 +120,9 @@ install(TARGETS exer04_action_server
 
 install(TARGETS exer05_action_client
   DESTINATION lib/${PROJECT_NAME})
+
+install(TARGETS exer06_param
+DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY launch
 DESTINATION share/${PROJECT_NAME})
