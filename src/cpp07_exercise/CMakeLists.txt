@@ -37,6 +37,17 @@ add_executable(exer03_client src/exer03_client.cpp)
 target_include_directories(exer03_client PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
+
+add_executable(exer04_action_server src/exer04_action_server.cpp)
+target_include_directories(exer04_action_server PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+add_executable(exer05_action_client src/exer05_action_client.cpp)
+target_include_directories(exer05_action_client PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
 ament_target_dependencies(
   exer01_pub_sub
   "rclcpp"
@@ -64,6 +75,24 @@ ament_target_dependencies(
   "geometry_msgs"
 )
 
+ament_target_dependencies(
+  exer04_action_server
+  "rclcpp"
+  "turtlesim"
+  "rclcpp_action"
+  "base_interface_demo"
+  "geometry_msgs"
+)
+
+ament_target_dependencies(
+  exer05_action_client
+  "rclcpp"
+  "turtlesim"
+  "rclcpp_action"
+  "base_interface_demo"
+  "geometry_msgs"
+)
+
 install(TARGETS exer01_pub_sub
   DESTINATION lib/${PROJECT_NAME})
 
@@ -71,6 +100,12 @@ install(TARGETS exer02_server
   DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS exer03_client
+  DESTINATION lib/${PROJECT_NAME})
+
+install(TARGETS exer04_action_server
+  DESTINATION lib/${PROJECT_NAME})
+
+install(TARGETS exer05_action_client
   DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY launch

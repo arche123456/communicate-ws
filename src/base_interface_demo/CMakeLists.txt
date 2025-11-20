@@ -29,6 +29,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/AddInts.srv"
   "action/Progress.action"
   "srv/Distance.srv"
+  "action/Nav.action"
 )
 
 if(BUILD_TESTING)
